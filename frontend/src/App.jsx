@@ -7,14 +7,11 @@ function App() {
   return (
     <Router>
       <div style={{ fontFamily: 'sans-serif' }}>
-        {/* Navigation Bar (The "Tabs") */}
         <nav style={{ padding: '20px', background: '#f0f0f0', marginBottom: '20px' }}>
           <Link to="/" style={{ marginRight: '15px' }}>Home</Link>
           <Link to="/pets" style={{ marginRight: '15px' }}>View Pets</Link>
           <Link to="/dashboard">Dashboard</Link>
         </nav>
-
-        {/* Page Content */}
         <div style={{ padding: '0 20px' }}>
           <Routes>
             <Route path="/" element={<Home />} />
