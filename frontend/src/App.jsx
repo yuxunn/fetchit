@@ -1,55 +1,29 @@
-import { createClient } from '@supabase/supabase-js'
-import { useEffect, useState } from 'react'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
+import ViewPets from './pages/ViewPets'
 
 function App() {
-  const [dogs, setDogs] = useState([])
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    async function fetchDogs() {
-      // Fetch all columns from the 'dogs' table
-      const { data, error } = await supabase
-        .from('dogs')
-        .select('*')
-      
-      if (error) {
-        setError(error.message)
-      } else {
-        setDogs(data)
-      }
-    }
-    fetchDogs()
-  }, [])
-
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>🐶 FetchIt: Available Dogs</h1>
-      
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+    <Router>
+      <div style={{ fontFamily: 'sans-serif' }}>
+        {/* Navigation Bar (The "Tabs") */}
+        <nav style={{ padding: '20px', background: '#f0f0f0', marginBottom: '20px' }}>
+          <Link to="/" style={{ marginRight: '15px' }}>Home</Link>
+          <Link to="/pets" style={{ marginRight: '15px' }}>View Pets</Link>
+          <Link to="/dashboard">Dashboard</Link>
+        </nav>
 
-      {dogs.length === 0 && !error ? (
-        <p>Loading dogs (or no dogs found)...</p>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {dogs.map((dog) => (
-            <li key={dog.id} style={{ 
-              border: '1px solid #ccc', 
-              margin: '10px 0', 
-              padding: '10px',
-              borderRadius: '8px' 
-            }}>
-              <h3>{dog.name}</h3>
-              <p>Breed: {dog.breed || 'Unknown'}</p>
-              <p>Status: {dog.status || 'Available'}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+        {/* Page Content */}
+        <div style={{ padding: '0 20px' }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/pets" element={<ViewPets />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   )
 }
 
