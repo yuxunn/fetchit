@@ -1,20 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import supabase from '../supabaseClient'
 
 const PetDetails = () => {
   const { id } = useParams()
   const [dog, setDog] = useState(null)
   const [vetBills, setVetBills] = useState([])
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchDogDetails()
-  }, [id])
 
   async function fetchDogDetails() {
     setLoading(true)
@@ -39,6 +31,10 @@ const PetDetails = () => {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    fetchDogDetails()
+  }, [id])
 
   if (loading) return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
