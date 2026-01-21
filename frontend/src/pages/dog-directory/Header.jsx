@@ -8,18 +8,18 @@ import {
   Switch,
   Select,
   Portal,
-  createListCollection
-} from '@chakra-ui/react';
-import { LuList, LuLayoutGrid } from 'react-icons/lu';
+  createListCollection,
+} from "@chakra-ui/react";
+import { LuList, LuLayoutGrid } from "react-icons/lu";
 
 const SORT_OPTIONS = createListCollection({
   items: [
-    { label: 'Newest', value: 'newest' },
-    { label: 'Oldest', value: 'oldest' },
-    { label: 'Name (A-Z)', value: 'name_asc' },
-    { label: 'Name (Z-A)', value: 'name_desc' },
-    { label: 'Age (Youngest)', value: 'age_young' },
-    { label: 'Age (Oldest)', value: 'age_old' },
+    { label: "Newest", value: "newest" },
+    { label: "Oldest", value: "oldest" },
+    { label: "Name (A-Z)", value: "name_asc" },
+    { label: "Name (Z-A)", value: "name_desc" },
+    { label: "Age (Youngest)", value: "age_young" },
+    { label: "Age (Oldest)", value: "age_old" },
   ],
 });
 
@@ -31,9 +31,8 @@ export default function Header({
   viewMode,
   setViewMode,
   sortBy,
-  setSortBy
+  setSortBy,
 }) {
-
   return (
     <>
       {/* Search Bar */}
@@ -42,8 +41,10 @@ export default function Header({
           flex="1"
           placeholder="Search dogs..."
           value={searchValue}
-          onChange={e => setSearchValue(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') onSearch?.(); }}
+          onChange={(e) => setSearchValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") onSearch?.();
+          }}
           size="md"
         />
         <Button bg="bg.subtle" variant="outline" onClick={onSearch}>
@@ -53,11 +54,13 @@ export default function Header({
 
       {/* Results/controls bar */}
       <HStack w="full" mb={2}>
-        <Text fontSize="sm" color="fg.muted">Showing {dogCount} dogs</Text>
+        <Text fontSize="sm" color="fg.muted">
+          Showing {dogCount} dogs
+        </Text>
         <Spacer />
         <Switch.Root
-          checked={viewMode === 'grid'}
-          onCheckedChange={e => setViewMode(e.checked ? 'grid' : 'list')}
+          checked={viewMode === "grid"}
+          onCheckedChange={(e) => setViewMode(e.checked ? "grid" : "list")}
           size="md"
           colorPalette="gray"
         >
@@ -76,7 +79,7 @@ export default function Header({
           minW="120px"
           ml={2}
           value={[sortBy]}
-          onValueChange={e => setSortBy(e.value)}
+          onValueChange={(e) => setSortBy(e.value)}
         >
           <Select.HiddenSelect />
           <Select.Control>

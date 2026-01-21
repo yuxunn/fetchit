@@ -1,7 +1,16 @@
-import { Card as ChakraCard, Image, HStack, SimpleGrid, Wrap, Badge, Text, IconButton } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { HiEye, HiPencil, HiArchiveBox } from 'react-icons/hi2';
+import {
+  Card as ChakraCard,
+  Image,
+  HStack,
+  SimpleGrid,
+  Wrap,
+  Badge,
+  Text,
+  IconButton,
+} from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { HiEye, HiPencil, HiArchiveBox } from "react-icons/hi2";
 
 export default function CardGrid({ dogs }) {
   return (
@@ -15,11 +24,11 @@ export default function CardGrid({ dogs }) {
 
 function Card({ dog }) {
   const { data: imageData } = useQuery({
-    queryKey: ['dog-image', dog.name],
+    queryKey: ["dog-image", dog.name],
     queryFn: async () => {
       const response = await fetch(`https://dog.ceo/api/breeds/image/random`);
       if (!response.ok) {
-        throw new Error('Failed to fetch dog image');
+        throw new Error("Failed to fetch dog image");
       }
       return response.json();
     },
@@ -31,7 +40,7 @@ function Card({ dog }) {
   return (
     <ChakraCard.Root maxW="sm" overflow="hidden">
       <Image
-        src={imageUrl || 'https://via.placeholder.com/300x200?text=Loading...'}
+        src={imageUrl || "https://via.placeholder.com/300x200?text=Loading..."}
         alt={dog.name}
         fallbackSrc="https://via.placeholder.com/300x200?text=No+Image"
         aspectRatio={4 / 3}
@@ -45,8 +54,16 @@ function Card({ dog }) {
         <Wrap gap={2}>
           <Badge variant="outline">{dog.kennel}</Badge>
           <Badge variant="solid">{dog.status}</Badge>
-          {dog.hdbApproved && <Badge variant="subtle" colorPalette="teal">HDB Approved</Badge>}
-          {dog.medicalPriority && <Badge variant="solid" colorPalette="orange">{dog.medicalPriority}</Badge>}
+          {dog.hdbApproved && (
+            <Badge variant="subtle" colorPalette="teal">
+              HDB Approved
+            </Badge>
+          )}
+          {dog.medicalPriority && (
+            <Badge variant="solid" colorPalette="orange">
+              {dog.medicalPriority}
+            </Badge>
+          )}
         </Wrap>
       </ChakraCard.Body>
       <ChakraCard.Footer justifyContent="flex-end">
