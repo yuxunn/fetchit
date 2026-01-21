@@ -10,13 +10,20 @@ if (supabaseUrl && supabaseAnonKey) {
   supabase = createClient(supabaseUrl, supabaseAnonKey)
 } else {
   // Stub: mock the methods you use for UI development
+  // Helper to allow method chaining (e.g., .select().order())
+  const chainable = {
+    select: function() { return this; },
+    order: function() { return this; },
+    eq: function() { return this; },
+    insert: async () => ({ data: [], error: null }),
+    update: async () => ({ data: [], error: null }),
+    delete: async () => ({ data: [], error: null }),
+    single: function() { return this; },
+    // Add more chainable methods as needed
+    then: function(resolve) { return Promise.resolve({ data: [], error: null }).then(resolve); },
+  };
   supabase = {
-    from: () => ({
-      select: async () => ({ data: [], error: null }),
-      insert: async () => ({ data: [], error: null }),
-      update: async () => ({ data: [], error: null }),
-      delete: async () => ({ data: [], error: null }),
-    }),
+    from: () => Object.create(chainable),
     auth: {
       signInWithPassword: async () => ({ data: null, error: null }),
       signUp: async () => ({ data: null, error: null }),
