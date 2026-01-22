@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import DashboardLayout from './components/layouts/dashboard-layout';
 
 import DogDirectory from './pages/dog-directory';
+import UploadFiles from './pages/upload-files';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/pets/:id" element={<PetDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dog-directory" element={<DogDirectory />} />
+          <Route path="/upload-files" element={<UploadFiles />} />
         </Routes>
       </DashboardLayout>
     </Router>
