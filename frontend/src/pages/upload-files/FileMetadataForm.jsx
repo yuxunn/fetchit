@@ -154,7 +154,7 @@ export default function FileMetadataForm({
         {/* Submit Button */}
         <Button
           type="submit"
-          colorPalette="blue"
+          colorPalette="orange"
           size="lg"
           disabled={disabled}
           w="full"
