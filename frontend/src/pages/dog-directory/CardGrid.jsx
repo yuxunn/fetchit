@@ -69,7 +69,7 @@ function Card({ dog }) {
       <ChakraCard.Footer justifyContent="flex-end">
         <HStack gap={2}>
           <IconButton asChild variant="ghost" size="sm">
-            <Link to={`/dog-directory/${dog.id}`}>
+            <Link to={`/dog-details`}>
               <HiEye />
             </Link>
           </IconButton>

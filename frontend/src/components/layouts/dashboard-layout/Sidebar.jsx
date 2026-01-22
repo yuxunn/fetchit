@@ -22,11 +22,12 @@ import {
 const navItems = [
   { label: "Home", path: "/", icon: FiHome },
   { label: "Dog Directory", path: "/dog-directory", icon: FiGrid },
-  { label: "Events", path: "/", icon: FiCalendar },
-  { label: "Users", path: "/", icon: FiUsers },
-  { label: "Sponsorships", path: "/", icon: FiHeart },
-  { label: "Vet Bills", path: "/", icon: FiFileText },
-  { label: "Archived Dogs", path: "/", icon: FiArchive },
+  { label: "Dog Details", path: "/dog-details", icon: FiList },
+  { label: "Events", path: "/events", icon: FiCalendar },
+  { label: "Users", path: "/users", icon: FiUsers },
+  { label: "Sponsorships", path: "/sponsorships", icon: FiHeart },
+  { label: "Vet Bills", path: "/vet-bills", icon: FiFileText },
+  { label: "Archived Dogs", path: "/archived-dogs", icon: FiArchive },
   { label: "Upload Files", path: "/upload-files", icon: FiUpload },
 ];
 

@@ -31,6 +31,8 @@ const DUMMY_FILES = [
   },
 ];
 
+// TODO: Consider using Chakra UI's native file input for more idiomatic implementation, but this is fine as well.
+// https://chakra-ui.com/docs/components/file-upload
 export default function UploadFiles() {
   // File upload state
   const [selectedFile, setSelectedFile] = useState(null);
