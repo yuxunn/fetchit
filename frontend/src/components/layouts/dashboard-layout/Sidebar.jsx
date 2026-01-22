@@ -27,7 +27,7 @@ const navItems = [
   { label: "Sponsorships", path: "/", icon: FiHeart },
   { label: "Vet Bills", path: "/", icon: FiFileText },
   { label: "Archived Dogs", path: "/", icon: FiArchive },
-  { label: "Upload Files", path: "/", icon: FiUpload },
+  { label: "Upload Files", path: "/upload-files", icon: FiUpload },
 ];
 
 export default function Sidebar() {
