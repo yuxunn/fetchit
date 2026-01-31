@@ -60,3 +60,42 @@ INSERT INTO merchandise (name, category, price, stock_quantity) VALUES
 ('Travel Crate', 'Accessories', 65.00, 25),
 ('Dental Sticks', 'Treats', 16.50, 140),
 ('Winter Jacket', 'Clothing', 35.99, 40);
+
+-- Create test auth user for local development
+-- This matches the admin user in the users table for authentication
+DELETE FROM auth.users WHERE email = 'admin@fetchit.com';
+
+INSERT INTO auth.users (
+  instance_id, 
+  id, 
+  aud, 
+  role, 
+  email, 
+  encrypted_password, 
+  email_confirmed_at, 
+  raw_app_meta_data, 
+  raw_user_meta_data, 
+  created_at, 
+  updated_at, 
+  confirmation_token, 
+  email_change, 
+  email_change_token_new, 
+  recovery_token
+) 
+VALUES (
+  '00000000-0000-0000-0000-000000000000', 
+  '00000000-0000-0000-0000-000000000001', 
+  'authenticated', 
+  'authenticated', 
+  'admin@fetchit.com', 
+  crypt('password123', gen_salt('bf')), 
+  NOW(), 
+  '{"provider":"email","providers":["email"]}', 
+  '{}', 
+  NOW(), 
+  NOW(), 
+  '', 
+  '', 
+  '', 
+  ''
+);

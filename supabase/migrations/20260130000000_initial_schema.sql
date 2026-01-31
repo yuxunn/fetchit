@@ -65,6 +65,22 @@ CREATE TABLE IF NOT EXISTS merchandise (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create documents table
+CREATE TABLE IF NOT EXISTS documents (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    file_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_size BIGINT NOT NULL,
+    file_type TEXT NOT NULL,
+    category TEXT NOT NULL CHECK (category IN ('medical', 'vet-bills', 'adoption', 'training', 'general')),
+    visibility TEXT NOT NULL CHECK (visibility IN ('public', 'private', 'admins-only')),
+    remarks TEXT,
+    dog_id BIGINT REFERENCES dogs(id) ON DELETE CASCADE,
+    uploaded_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
@@ -74,9 +90,14 @@ CREATE INDEX IF NOT EXISTS idx_dogs_hdb_approved ON dogs(is_hdb_approved);
 CREATE INDEX IF NOT EXISTS idx_dogs_adopter_id ON dogs(adopter_id);
 CREATE INDEX IF NOT EXISTS idx_medical_history_dog_id ON medical_history(dog_id);
 CREATE INDEX IF NOT EXISTS idx_vet_bills_dog_id ON vet_bills(dog_id);
+CREATE INDEX IF NOT EXISTS idx_documents_category ON documents(category);
+CREATE INDEX IF NOT EXISTS idx_documents_visibility ON documents(visibility);
+CREATE INDEX IF NOT EXISTS idx_documents_dog_id ON documents(dog_id);
+CREATE INDEX IF NOT EXISTS idx_documents_uploaded_by ON documents(uploaded_by);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dogs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE medical_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vet_bills ENABLE ROW LEVEL SECURITY;
@@ -137,3 +158,24 @@ CREATE POLICY "Allow authenticated update on merchandise" ON merchandise
 
 CREATE POLICY "Allow authenticated delete on merchandise" ON merchandise
     FOR DELETE USING (true);
+
+-- Documents table policies
+CREATE POLICY "Allow public to read public documents" ON documents
+    FOR SELECT USING (visibility = 'public');
+
+CREATE POLICY "Allow users to read their own documents" ON documents
+    FOR SELECT USING (uploaded_by = auth.uid());
+
+CREATE POLICY "Allow admins to read admin-only documents" ON documents
+    FOR SELECT USING (visibility = 'admins-only' AND uploaded_by = auth.uid());
+
+CREATE POLICY "Allow authenticated users to insert documents" ON documents
+    FOR INSERT WITH CHECK (uploaded_by = auth.uid());
+
+CREATE POLICY "Allow users to update their own documents" ON documents
+    FOR UPDATE USING (uploaded_by = auth.uid())
+    WITH CHECK (uploaded_by = auth.uid());
+
+CREATE POLICY "Allow users to delete their own documents" ON documents
+    FOR DELETE USING (uploaded_by = auth.uid());
+

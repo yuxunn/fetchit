@@ -33,3 +33,4 @@ if (supabaseUrl && supabaseAnonKey) {
 }
 
 export default supabase
+export { supabase }

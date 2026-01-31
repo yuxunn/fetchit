@@ -83,7 +83,10 @@ export default function FileTable({ files, onView, onDownload, onDelete }) {
               Category
             </Table.ColumnHeader>
             <Table.ColumnHeader color="fg.default" fontWeight="bold">
-              Uploaded By
+              Visibility
+            </Table.ColumnHeader>
+            <Table.ColumnHeader color="fg.default" fontWeight="bold">
+              Size
             </Table.ColumnHeader>
             <Table.ColumnHeader color="fg.default" fontWeight="bold">
               Date Uploaded
@@ -97,11 +100,11 @@ export default function FileTable({ files, onView, onDownload, onDelete }) {
           {files.map((file) => (
             <Table.Row key={file.id} _hover={{ bg: "bg.muted" }}>
               <Table.Cell>
-                <FileTypeIcon filename={file.fileName} />
+                <FileTypeIcon filename={file.file_name} />
               </Table.Cell>
               <Table.Cell>
                 <Text fontWeight="medium" color="fg.default">
-                  {file.fileName}
+                  {file.file_name}
                 </Text>
               </Table.Cell>
               <Table.Cell>
@@ -113,10 +116,18 @@ export default function FileTable({ files, onView, onDownload, onDelete }) {
                 </Badge>
               </Table.Cell>
               <Table.Cell>
-                <Text color="fg.muted">{file.uploadedBy}</Text>
+                <Badge
+                  colorPalette={file.visibility === 'public' ? 'green' : 'gray'}
+                  variant="solid"
+                >
+                  {file.visibility}
+                </Badge>
               </Table.Cell>
               <Table.Cell>
-                <Text color="fg.muted">{file.dateUploaded}</Text>
+                <Text color="fg.muted">{(file.file_size / 1024).toFixed(2)} KB</Text>
+              </Table.Cell>
+              <Table.Cell>
+                <Text color="fg.muted">{new Date(file.created_at).toLocaleDateString()}</Text>
               </Table.Cell>
               <Table.Cell>
                 <HStack justify="center" gap={1}>
