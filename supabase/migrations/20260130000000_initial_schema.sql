@@ -15,13 +15,33 @@ CREATE TABLE IF NOT EXISTS dogs (
     id BIGSERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     breed TEXT NOT NULL,
+    age INTEGER,
+    size TEXT CHECK (size IN ('Small', 'Medium', 'Large')),
+    weight NUMERIC(5, 2),
     gender TEXT NOT NULL CHECK (gender IN ('Male', 'Female')),
     status TEXT NOT NULL DEFAULT 'Available' CHECK (status IN ('Available', 'Adopted', 'Pending')),
     is_hdb_approved BOOLEAN DEFAULT false,
     kennel TEXT,
     description TEXT,
+    sterilization_status TEXT DEFAULT 'Pending' CHECK (sterilization_status IN ('Completed', 'Incomplete', 'Pending')),
+    vaccination_status TEXT DEFAULT 'Pending' CHECK (vaccination_status IN ('Completed', 'Incomplete', 'Pending')),
+    medical_checkup_status TEXT DEFAULT 'Pending' CHECK (medical_checkup_status IN ('Completed', 'Incomplete', 'Pending')),
+    medical_priority TEXT DEFAULT 'Normal' CHECK (medical_priority IN ('Low', 'Normal', 'High')),
+    images TEXT[] DEFAULT '{}',
     adopter_id UUID REFERENCES users(id) ON DELETE SET NULL,
     adopted_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create medical_history table
+CREATE TABLE IF NOT EXISTS medical_history (
+    id BIGSERIAL PRIMARY KEY,
+    dog_id BIGINT REFERENCES dogs(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    date_archived TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    shelter TEXT,
+    status TEXT DEFAULT 'Pending' CHECK (status IN ('Completed', 'Incomplete', 'Pending')),
+    description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -52,11 +72,13 @@ CREATE INDEX IF NOT EXISTS idx_dogs_status ON dogs(status);
 CREATE INDEX IF NOT EXISTS idx_dogs_gender ON dogs(gender);
 CREATE INDEX IF NOT EXISTS idx_dogs_hdb_approved ON dogs(is_hdb_approved);
 CREATE INDEX IF NOT EXISTS idx_dogs_adopter_id ON dogs(adopter_id);
+CREATE INDEX IF NOT EXISTS idx_medical_history_dog_id ON medical_history(dog_id);
 CREATE INDEX IF NOT EXISTS idx_vet_bills_dog_id ON vet_bills(dog_id);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dogs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE medical_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vet_bills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE merchandise ENABLE ROW LEVEL SECURITY;
 
@@ -68,6 +90,9 @@ CREATE POLICY "Allow users to update their own data" ON users
     FOR UPDATE USING (auth.uid() = id);
 
 CREATE POLICY "Allow public read access on dogs" ON dogs
+    FOR SELECT USING (true);
+
+CREATE POLICY "Allow public read access on medical_history" ON medical_history
     FOR SELECT USING (true);
 
 CREATE POLICY "Allow public read access on vet_bills" ON vet_bills
@@ -84,6 +109,15 @@ CREATE POLICY "Allow authenticated update on dogs" ON dogs
     FOR UPDATE USING (true);
 
 CREATE POLICY "Allow authenticated delete on dogs" ON dogs
+    FOR DELETE USING (true);
+
+CREATE POLICY "Allow authenticated insert on medical_history" ON medical_history
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated update on medical_history" ON medical_history
+    FOR UPDATE USING (true);
+
+CREATE POLICY "Allow authenticated delete on medical_history" ON medical_history
     FOR DELETE USING (true);
 
 CREATE POLICY "Allow authenticated insert on vet_bills" ON vet_bills
