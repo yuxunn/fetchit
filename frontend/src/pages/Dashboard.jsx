@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
-import { createClient } from '@supabase/supabase-js'
-
-
- const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import supabase from '../supabaseClient'
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -21,10 +16,6 @@ const Dashboard = () => {
   
   const [showAddForm, setShowAddForm] = useState(false)
   const [newDog, setNewDog] = useState({ name: '', breed: '', gender: 'Male' })
-
-  useEffect(() => {
-    fetchDashboardData()
-  }, [])
 
   async function fetchDashboardData() {
     setLoading(true)
@@ -63,6 +54,10 @@ const Dashboard = () => {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
 
   const handleAddDog = async (e) => {
     e.preventDefault()
