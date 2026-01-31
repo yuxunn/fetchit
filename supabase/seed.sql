@@ -6,17 +6,31 @@ INSERT INTO users (id, email, full_name, phone, address, role) VALUES
 ('00000000-0000-0000-0000-000000000004', 'volunteer@fetchit.com', 'Maria Tan', '+65 9456 7890', '321 Clementi Ave, Singapore', 'volunteer');
 
 -- Seed data for dogs table
-INSERT INTO dogs (name, breed, gender, status, is_hdb_approved, kennel, description, adopter_id, adopted_at) VALUES
-('Max', 'Golden Retriever', 'Male', 'Available', true, 'A1', 'Friendly and energetic golden retriever. Loves to play fetch and great with kids!', NULL, NULL),
-('Bella', 'Labrador', 'Female', 'Available', true, 'A2', 'Sweet and gentle lab who loves belly rubs and long walks in the park.', NULL, NULL),
-('Charlie', 'German Shepherd', 'Male', 'Adopted', false, 'B1', 'Smart and loyal. Great guard dog and companion for active families.', '00000000-0000-0000-0000-000000000002', '2025-12-15 10:30:00+00'),
-('Luna', 'Poodle', 'Female', 'Available', true, 'A3', 'Adorable toy poodle with a playful personality. Perfect for apartment living.', NULL, NULL),
-('Rocky', 'Bulldog', 'Male', 'Pending', true, 'B2', 'Calm and affectionate bulldog. Loves naps and snacks equally!', NULL, NULL),
-('Daisy', 'Beagle', 'Female', 'Available', true, 'A4', 'Curious and friendly beagle with a great nose. Loves exploring!', NULL, NULL),
-('Cooper', 'Border Collie', 'Male', 'Available', false, 'B3', 'Highly intelligent and energetic. Needs an active family who can keep up!', NULL, NULL),
-('Sadie', 'Shih Tzu', 'Female', 'Available', true, 'A5', 'Gentle and affectionate lap dog. Perfect companion for seniors.', NULL, NULL),
-('Buddy', 'Mixed Breed', 'Male', 'Adopted', true, 'C1', 'Lovable mixed breed with a heart of gold. Great with other pets.', '00000000-0000-0000-0000-000000000003', '2026-01-05 14:20:00+00'),
-('Molly', 'Corgi', 'Female', 'Available', true, 'A6', 'Short-legged cutie with endless energy and personality. Royal companion!', NULL, NULL);
+INSERT INTO dogs (name, breed, age, size, weight, gender, status, is_hdb_approved, kennel, description, sterilization_status, vaccination_status, medical_checkup_status, medical_priority, images, adopter_id, adopted_at) VALUES
+('Max', 'Golden Retriever', 3, 'Large', 32.50, 'Male', 'Available', true, 'A1', 'Friendly and energetic golden retriever. Loves to play fetch and great with kids!', 'Sterilized', 'Up to Date', 'Completed', 'Normal', ARRAY['https://images.dog.ceo/breeds/retriever-golden/n02099601_1003.jpg'], NULL, NULL),
+('Bella', 'Labrador', 2, 'Large', 28.00, 'Female', 'Available', true, 'A2', 'Sweet and gentle lab who loves belly rubs and long walks in the park.', 'Sterilized', 'Up to Date', 'Completed', 'Normal', ARRAY['https://images.dog.ceo/breeds/labrador/n02099712_1181.jpg'], NULL, NULL),
+('Charlie', 'German Shepherd', 5, 'Large', 38.00, 'Male', 'Adopted', false, 'B1', 'Smart and loyal. Great guard dog and companion for active families.', 'Sterilized', 'Up to Date', 'Completed', 'Low', ARRAY['https://images.dog.ceo/breeds/germanshepherd/n02106662_10544.jpg'], '00000000-0000-0000-0000-000000000002', '2025-12-15 10:30:00+00'),
+('Luna', 'Poodle', 1, 'Small', 8.50, 'Female', 'Available', true, 'A3', 'Adorable toy poodle with a playful personality. Perfect for apartment living.', 'Not Sterilized', 'Incomplete', 'Pending', 'High', ARRAY['https://images.dog.ceo/breeds/poodle-toy/n02113624_1449.jpg'], NULL, NULL),
+('Rocky', 'Bulldog', 4, 'Medium', 22.00, 'Male', 'Pending', true, 'B2', 'Calm and affectionate bulldog. Loves naps and snacks equally!', 'Sterilized', 'Up to Date', 'Completed', 'Normal', ARRAY['https://images.dog.ceo/breeds/bulldog-english/jager-1.jpg'], NULL, NULL),
+('Daisy', 'Beagle', 2, 'Medium', 12.50, 'Female', 'Available', true, 'A4', 'Curious and friendly beagle with a great nose. Loves exploring!', 'Sterilized', 'Up to Date', 'Completed', 'Normal', ARRAY['https://images.dog.ceo/breeds/beagle/n02088364_11136.jpg'], NULL, NULL),
+('Cooper', 'Border Collie', 3, 'Medium', 18.00, 'Male', 'Available', false, 'B3', 'Highly intelligent and energetic. Needs an active family who can keep up!', 'Sterilized', 'Up to Date', 'Completed', 'Normal', ARRAY['https://images.dog.ceo/breeds/collie-border/n02106166_355.jpg'], NULL, NULL),
+('Sadie', 'Shih Tzu', 6, 'Small', 7.20, 'Female', 'Available', true, 'A5', 'Gentle and affectionate lap dog. Perfect companion for seniors.', 'Sterilized', 'Overdue', 'Overdue', 'High', ARRAY['https://images.dog.ceo/breeds/shihtzu/n02086240_4275.jpg'], NULL, NULL),
+('Buddy', 'Mixed Breed', 4, 'Medium', 15.00, 'Male', 'Adopted', true, 'C1', 'Lovable mixed breed with a heart of gold. Great with other pets.', 'Sterilized', 'Up to Date', 'Completed', 'Low', ARRAY['https://images.dog.ceo/breeds/hound-afghan/n02088094_1003.jpg'], '00000000-0000-0000-0000-000000000003', '2026-01-05 14:20:00+00'),
+('Molly', 'Corgi', 2, 'Small', 11.00, 'Female', 'Available', true, 'A6', 'Short-legged cutie with endless energy and personality. Royal companion!', 'Not Sterilized', 'Incomplete', 'Pending', 'Urgent', ARRAY['https://images.dog.ceo/breeds/corgi-cardigan/n02113186_1226.jpg'], NULL, NULL);
+
+-- Seed data for medical_history table
+INSERT INTO medical_history (dog_id, name, date_archived, shelter, status, description) VALUES
+(1, 'Annual Checkup & Vaccinations', '2026-01-15 14:30:00+00', 'FetchIt Main Shelter', 'Completed', 'Annual checkup and vaccinations'),
+(1, 'Dental Cleaning', '2026-01-20 10:15:00+00', 'FetchIt Main Shelter', 'Completed', 'Dental cleaning procedure'),
+(2, 'Health Examination', '2026-01-10 09:45:00+00', 'FetchIt Main Shelter', 'Completed', 'Complete health examination'),
+(3, 'Minor Injury Surgery', '2025-12-20 16:20:00+00', 'FetchIt Main Shelter', 'Completed', 'Surgery for minor injury'),
+(4, 'Grooming & Health Check', '2026-01-05 11:00:00+00', 'FetchIt Main Shelter', 'Pending', 'Scheduled grooming and health check'),
+(5, 'Vaccination & Blood Work', '2026-01-18 13:30:00+00', 'FetchIt Main Shelter', 'Completed', 'Vaccination and blood work'),
+(6, 'Ear Infection Treatment', '2026-01-12 15:45:00+00', 'FetchIt Main Shelter', 'Completed', 'Treatment for ear infection'),
+(7, 'Complete Physical Exam', '2026-01-08 10:30:00+00', 'FetchIt Main Shelter', 'Completed', 'Complete physical examination'),
+(8, 'Nail Trim & Checkup', '2026-01-22 14:00:00+00', 'FetchIt Main Shelter', 'Incomplete', 'Nail trim and routine checkup'),
+(9, 'Emergency Visit', '2025-12-28 18:30:00+00', 'FetchIt Main Shelter', 'Completed', 'Emergency visit due to injury'),
+(10, 'Annual Vaccinations', '2026-01-14 11:15:00+00', 'FetchIt Main Shelter', 'Pending', 'Annual vaccinations due');
 
 -- Seed data for vet_bills table
 INSERT INTO vet_bills (dog_id, amount, bill_date, description) VALUES
