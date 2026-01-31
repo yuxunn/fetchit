@@ -62,6 +62,7 @@ export default function Filters({
   medicalPriority,
   setMedicalPriority,
   handleResetFilters,
+  onSearch,
 }) {
   return (
     <VStack align="stretch" spacing={6} minW="xs">
@@ -296,7 +297,11 @@ export default function Filters({
         </Collapsible.Content>
       </Collapsible.Root>
 
-      <Button mt={4} variant="outline" w="full" onClick={handleResetFilters}>
+      <Button mt={4} colorPalette="blue" w="full" onClick={onSearch}>
+        Apply Filters
+      </Button>
+
+      <Button mt={2} variant="outline" w="full" onClick={handleResetFilters}>
         Reset Filters
       </Button>
     </VStack>

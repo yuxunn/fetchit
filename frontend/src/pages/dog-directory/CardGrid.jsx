@@ -54,14 +54,14 @@ function Card({ dog }) {
         <Wrap gap={2}>
           <Badge variant="outline">{dog.kennel}</Badge>
           <Badge variant="solid">{dog.status}</Badge>
-          {dog.hdbApproved && (
+          {dog.is_hdb_approved && (
             <Badge variant="subtle" colorPalette="teal">
               HDB Approved
             </Badge>
           )}
-          {dog.medicalPriority && (
+          {dog.medical_priority && (
             <Badge variant="solid" colorPalette="orange">
-              {dog.medicalPriority}
+              {dog.medical_priority}
             </Badge>
           )}
         </Wrap>

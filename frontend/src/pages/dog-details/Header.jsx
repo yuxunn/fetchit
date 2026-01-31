@@ -100,7 +100,7 @@ export default function Header({ dog }) {
             <DetailCard
               icon={<LuCircleCheck />}
               label="HDB Approved"
-              value={dog.hdbApproved ? "Yes" : "No"}
+              value={dog.is_hdb_approved ? "Yes" : "No"}
             />
           </SimpleGrid>
         </VStack>
@@ -111,17 +111,17 @@ export default function Header({ dog }) {
         <StatusCard
           icon={<LuCircleCheck />}
           label="Sterilization"
-          status={dog.sterilizationStatus}
+          status={dog.sterilization_status}
         />
         <StatusCard
           icon={<LuCircleCheck />}
           label="Vaccination"
-          status={dog.vaccinationStatus}
+          status={dog.vaccination_status}
         />
         <StatusCard
           icon={<LuCircleCheck />}
           label="Medical Checkup"
-          status={dog.medicalCheckupStatus}
+          status={dog.medical_checkup_status}
         />
       </SimpleGrid>
     </VStack>

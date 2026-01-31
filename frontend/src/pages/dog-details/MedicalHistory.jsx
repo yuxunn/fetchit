@@ -35,7 +35,7 @@ export default function MedicalHistory({ medicalHistory }) {
             <Table.Row key={record.id}>
               <Table.Cell>{index + 1}</Table.Cell>
               <Table.Cell>{record.name}</Table.Cell>
-              <Table.Cell>{record.dateArchived}</Table.Cell>
+              <Table.Cell>{record.date_archived}</Table.Cell>
               <Table.Cell>{record.shelter}</Table.Cell>
               <Table.Cell>
                 <Badge colorPalette={getStatusColor(record.status)} variant="solid">

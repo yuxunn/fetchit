@@ -11,7 +11,7 @@ import UploadFiles from './pages/upload-files';
 import SignIn from './pages/SignIn';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const handleSignIn = () => {
     setIsAuthenticated(true);
