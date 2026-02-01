@@ -1,12 +1,13 @@
 import { VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import supabase from "../../supabaseClient";
 import Header from "./Header";
 import MedicalHistory from "./MedicalHistory";
 
 export default function DogDetails() {
-  // For now, fetch dog with ID 1. This should be updated to use URL params when routing is fixed
-  const dogId = 1;
+  const { id } = useParams();
+  const dogId = parseInt(id);
 
   // Fetch dog details from Supabase
   const { data: dog = {}, isLoading: dogLoading, error: dogError } = useQuery({

@@ -58,8 +58,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dog-directory" element={<DogDirectory />} />
-          <Route path="/dog-details" element={<DogDetails />} />
+          <Route path="/dogs" element={<DogDirectory />} />
+          <Route path="/dogs/:id" element={<DogDetails />} />
           <Route path="/upload-files" element={<UploadFiles />} />
         </Routes>
       </DashboardLayout>

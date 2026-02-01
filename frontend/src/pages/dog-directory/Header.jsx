@@ -79,7 +79,7 @@ export default function Header({
           minW="120px"
           ml={2}
           value={[sortBy]}
-          onValueChange={(e) => setSortBy(e.value)}
+          onValueChange={(e) => setSortBy(e.value[0])}
         >
           <Select.HiddenSelect />
           <Select.Control>
