@@ -21,8 +21,7 @@ import {
 
 const navItems = [
   { label: "Home", path: "/", icon: FiHome },
-  { label: "Dog Directory", path: "/dog-directory", icon: FiGrid },
-  { label: "Dog Details", path: "/dog-details", icon: FiList },
+  { label: "Dog Directory", path: "/dogs", icon: FiGrid },
   { label: "Events", path: "/events", icon: FiCalendar },
   { label: "Users", path: "/users", icon: FiUsers },
   { label: "Sponsorships", path: "/sponsorships", icon: FiHeart },

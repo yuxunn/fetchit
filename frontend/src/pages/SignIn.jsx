@@ -10,17 +10,42 @@ import {
   Link,
   Field,
 } from "@chakra-ui/react";
+import { toaster } from "@/components/ui/toaster";
+import { supabase } from "@/supabaseClient";
 import logo from "@/components/ui/logo.jpeg";
 
 export default function SignIn({ onSignIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // For now, just call onSignIn - later integrate with Supabase auth
-    if (email && password) {
-      onSignIn();
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toaster.create({
+        title: "Login successful",
+        description: "Welcome back!",
+        type: "success",
+      });
+
+      onSignIn(data.user);
+    } catch (error) {
+      toaster.create({
+        title: "Login failed",
+        description: error.message || "Invalid email or password",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,8 +139,9 @@ export default function SignIn({ onSignIn }) {
                 size="lg"
                 w="full"
                 mt={2}
+                loading={loading}
               >
-                Login
+                {loading ? "Signing in..." : "Login"}
               </Button>
             </VStack>
           </Box>

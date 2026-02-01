@@ -1,39 +1,18 @@
 import { Box, VStack, Heading, Separator } from "@chakra-ui/react";
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toaster } from "@/components/ui/toaster";
+import { supabase } from "@/supabaseClient";
 import FileUploader from "./FileUploader";
 import UploadProgress from "./UploadProgress";
 import FileMetadataForm from "./FileMetadataForm";
 import FileTable from "./FileTable";
 
-// Dummy data for uploaded files
-const DUMMY_FILES = [
-  {
-    id: 1,
-    fileName: "vaccination_record.pdf",
-    category: "Vaccination",
-    uploadedBy: "John Doe",
-    dateUploaded: "2026-01-15",
-  },
-  {
-    id: 2,
-    fileName: "training_certificate.jpg",
-    category: "Training",
-    uploadedBy: "Jane Smith",
-    dateUploaded: "2026-01-18",
-  },
-  {
-    id: 3,
-    fileName: "medical_report.docx",
-    category: "Medical",
-    uploadedBy: "Dr. Brown",
-    dateUploaded: "2026-01-20",
-  },
-];
-
 // TODO: Consider using Chakra UI's native file input for more idiomatic implementation, but this is fine as well.
 // https://chakra-ui.com/docs/components/file-upload
 export default function UploadFiles() {
+  const queryClient = useQueryClient();
+
   // File upload state
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -44,8 +23,121 @@ export default function UploadFiles() {
   const [visibility, setVisibility] = useState([]);
   const [remarks, setRemarks] = useState("");
 
-  // Files list state
-  const [uploadedFiles, setUploadedFiles] = useState(DUMMY_FILES);
+  // Fetch documents from database
+  const { data: uploadedFiles = [], isLoading } = useQuery({
+    queryKey: ["documents"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("documents")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Upload mutation
+  const uploadMutation = useMutation({
+    mutationFn: async ({ file, metadata }) => {
+      // Get current user from session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+      const user = session.user;
+
+      // Upload file to storage with unique filename to avoid conflicts
+      const timestamp = Date.now();
+      const filePath = `${user.id}/${timestamp}_${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("documents")
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Insert document metadata
+      const { data, error: insertError } = await supabase
+        .from("documents")
+        .insert([
+          {
+            file_name: file.name,
+            file_path: filePath,
+            file_size: file.size,
+            file_type: file.type,
+            category: metadata.category,
+            visibility: metadata.visibility,
+            remarks: metadata.remarks,
+            uploaded_by: user.id,
+          },
+        ])
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      toaster.create({
+        title: "File uploaded successfully",
+        type: "success",
+      });
+
+      // Reset form
+      setSelectedFile(null);
+      setCategory([]);
+      setVisibility([]);
+      setRemarks("");
+      setUploadProgress(0);
+      setIsUploading(false);
+    },
+    onError: (error) => {
+      toaster.create({
+        title: "Upload failed",
+        description: error.message,
+        type: "error",
+      });
+      setIsUploading(false);
+    },
+  });
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (file) => {
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from("documents")
+        .remove([file.file_path]);
+
+      if (storageError) throw storageError;
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from("documents")
+        .delete()
+        .eq("id", file.id);
+
+      if (dbError) throw dbError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      toaster.create({
+        title: "File deleted",
+        type: "success",
+      });
+    },
+    onError: (error) => {
+      toaster.create({
+        title: "Delete failed",
+        description: error.message,
+        type: "error",
+      });
+    },
+  });
 
   const handleFileSelect = (file, validation) => {
     if (validation && !validation.valid) {
@@ -91,68 +183,83 @@ export default function UploadFiles() {
       return;
     }
 
-    // Simulate upload progress
     setIsUploading(true);
     setUploadProgress(0);
 
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
+    // Simulate progress while uploading
+    const progressInterval = setInterval(() => {
+      setUploadProgress((prev) => Math.min(prev + 10, 90));
+    }, 200);
 
-          // Add to uploaded files list
-          const newFile = {
-            id: uploadedFiles.length + 1,
-            fileName: selectedFile.name,
-            category: category[0],
-            uploadedBy: "Current User", // Replace with actual user
-            dateUploaded: new Date().toISOString().split("T")[0],
-          };
-          setUploadedFiles([newFile, ...uploadedFiles]);
-
-          // Reset form
-          setSelectedFile(null);
-          setCategory([]);
-          setVisibility([]);
-          setRemarks("");
-          setUploadProgress(0);
-
-          toaster.create({
-            title: "File uploaded successfully",
-            type: "success",
-          });
-
-          return 100;
-        }
-        return prev + 10;
+    try {
+      await uploadMutation.mutateAsync({
+        file: selectedFile,
+        metadata: {
+          category: category[0],
+          visibility: visibility[0],
+          remarks: remarks,
+        },
       });
-    }, 300);
+      setUploadProgress(100);
+    } catch (error) {
+      // Error handled by mutation
+    } finally {
+      clearInterval(progressInterval);
+    }
   };
 
-  const handleView = (file) => {
-    toaster.create({
-      title: "View file",
-      description: `Opening ${file.fileName}`,
-      type: "info",
-    });
+  const handleView = async (file) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("documents")
+        .createSignedUrl(file.file_path, 60);
+
+      if (error) throw error;
+
+      window.open(data.signedUrl, "_blank");
+    } catch (error) {
+      toaster.create({
+        title: "View failed",
+        description: error.message,
+        type: "error",
+      });
+    }
   };
 
-  const handleDownload = (file) => {
-    toaster.create({
-      title: "Download started",
-      description: `Downloading ${file.fileName}`,
-      type: "info",
-    });
+  const handleDownload = async (file) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("documents")
+        .download(file.file_path);
+
+      if (error) throw error;
+
+      // Create a blob URL and trigger download
+      const url = URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file.file_name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toaster.create({
+        title: "Download started",
+        description: `Downloading ${file.file_name}`,
+        type: "info",
+      });
+    } catch (error) {
+      toaster.create({
+        title: "Download failed",
+        description: error.message,
+        type: "error",
+      });
+    }
   };
 
   const handleDelete = (file) => {
-    setUploadedFiles(uploadedFiles.filter((f) => f.id !== file.id));
-    toaster.create({
-      title: "File deleted",
-      description: `${file.fileName} has been removed`,
-      type: "success",
-    });
+    deleteMutation.mutate(file);
   };
 
   return (

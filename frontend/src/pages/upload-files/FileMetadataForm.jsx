@@ -12,19 +12,18 @@ import {
 const CATEGORY_OPTIONS = createListCollection({
   items: [
     { label: "Medical Records", value: "medical" },
-    { label: "Training Certificates", value: "training" },
+    { label: "Vet Bills", value: "vet-bills" },
     { label: "Adoption Papers", value: "adoption" },
-    { label: "Vaccination Records", value: "vaccination" },
+    { label: "Training Certificates", value: "training" },
     { label: "General Documents", value: "general" },
   ],
 });
 
 const VISIBILITY_OPTIONS = createListCollection({
   items: [
-    { label: "Everyone", value: "everyone" },
-    { label: "Staff Only", value: "staff" },
-    { label: "Admins Only", value: "admins" },
+    { label: "Public", value: "public" },
     { label: "Private", value: "private" },
+    { label: "Admins Only", value: "admins-only" },
   ],
 });
 
