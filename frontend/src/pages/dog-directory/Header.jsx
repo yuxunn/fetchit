@@ -11,6 +11,7 @@ import {
   createListCollection,
 } from "@chakra-ui/react";
 import { LuList, LuLayoutGrid } from "react-icons/lu";
+import { Link } from "react-router-dom";
 
 const SORT_OPTIONS = createListCollection({
   items: [
@@ -58,6 +59,9 @@ export default function Header({
           Showing {dogCount} dogs
         </Text>
         <Spacer />
+        <Button asChild colorScheme="blue" size="sm">
+          <Link to="/dogs/new">Add New Dog</Link>
+        </Button>
         <Switch.Root
           checked={viewMode === "grid"}
           onCheckedChange={(e) => setViewMode(e.checked ? "grid" : "list")}

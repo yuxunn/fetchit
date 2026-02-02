@@ -25,7 +25,7 @@ function Breadcrumb({ separator = "/ ", ...rest }) {
       return { label, to };
     });
 
-    return [{ label: "Home", to: "/" }, ...links];
+    return [{ label: "Home", to: "/dogs" }, ...links];
   }, [pathname]);
 
   return (

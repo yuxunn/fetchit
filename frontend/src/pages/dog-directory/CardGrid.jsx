@@ -8,7 +8,6 @@ import {
   Text,
   IconButton,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { HiEye, HiPencil, HiArchiveBox } from "react-icons/hi2";
 
@@ -23,24 +22,13 @@ export default function CardGrid({ dogs }) {
 }
 
 function Card({ dog }) {
-  const { data: imageData } = useQuery({
-    queryKey: ["dog-image", dog.name],
-    queryFn: async () => {
-      const response = await fetch(`https://dog.ceo/api/breeds/image/random`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch dog image");
-      }
-      return response.json();
-    },
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-  });
-
-  const imageUrl = imageData?.message;
+  // Use the first image from the dog's images array, or fallback to placeholder
+  const imageUrl = dog.images && dog.images.length > 0 ? dog.images[0] : null;
 
   return (
     <ChakraCard.Root maxW="sm" overflow="hidden">
       <Image
-        src={imageUrl || "https://via.placeholder.com/300x200?text=Loading..."}
+        src={imageUrl || "https://via.placeholder.com/300x200?text=No+Image"}
         alt={dog.name}
         fallbackSrc="https://via.placeholder.com/300x200?text=No+Image"
         aspectRatio={4 / 3}
@@ -74,7 +62,7 @@ function Card({ dog }) {
             </Link>
           </IconButton>
           <IconButton asChild variant="ghost" size="sm">
-            <Link to="/">
+            <Link to={`/dogs/${dog.id}/edit`}>
               <HiPencil />
             </Link>
           </IconButton>
