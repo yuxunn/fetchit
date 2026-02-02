@@ -20,7 +20,6 @@ import {
 } from "react-icons/fi";
 
 const navItems = [
-  { label: "Home", path: "/", icon: FiHome },
   { label: "Dog Directory", path: "/dogs", icon: FiGrid },
   { label: "Events", path: "/events", icon: FiCalendar },
   { label: "Users", path: "/users", icon: FiUsers },

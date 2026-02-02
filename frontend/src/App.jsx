@@ -1,13 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 
-import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import DashboardLayout from './components/layouts/dashboard-layout';
 
 import DogDirectory from './pages/dog-directory';
 import DogDetails from './pages/dog-details';
+import NewDog from './pages/dog-form';
 import UploadFiles from './pages/upload-files';
 import SignIn from './pages/SignIn';
 
@@ -56,9 +56,11 @@ function App() {
     <Router>
       <DashboardLayout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/dogs" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dogs" element={<DogDirectory />} />
+          <Route path="/dogs/new" element={<NewDog />} />
+          <Route path="/dogs/:id/edit" element={<NewDog />} />
           <Route path="/dogs/:id" element={<DogDetails />} />
           <Route path="/upload-files" element={<UploadFiles />} />
         </Routes>
