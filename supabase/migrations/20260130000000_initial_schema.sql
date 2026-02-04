@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS documents (
     file_size BIGINT NOT NULL,
     file_type TEXT NOT NULL,
     category TEXT NOT NULL CHECK (category IN ('medical', 'vet-bills', 'adoption', 'training', 'general')),
-    visibility TEXT NOT NULL CHECK (visibility IN ('public', 'private', 'admins-only')),
+    visibility TEXT NOT NULL CHECK (visibility IN ('public', 'administrators-only', 'administrators-volunteers')),
     remarks TEXT,
     dog_id BIGINT REFERENCES dogs(id) ON DELETE CASCADE,
     uploaded_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,

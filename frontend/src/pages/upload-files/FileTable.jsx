@@ -284,9 +284,9 @@ export default function FileTable({
                     </Text>
                   </Table.Cell>
                   <Table.Cell>
-                    <Badge colorPalette="orange" variant="solid">
+                    <Text color="fg.default">
                       {getCategoryLabel(file.category)}
-                    </Badge>
+                    </Text>
                   </Table.Cell>
                   <Table.Cell>
                     <Badge
