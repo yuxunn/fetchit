@@ -11,6 +11,7 @@ import DogDetails from './pages/dog-details';
 import UploadFiles from './pages/upload-files';
 import ArchivedDogs from './pages/ArchivedDogs';
 import Users from './pages/Users';
+import VetBills from './pages/VetBills';
 import SignIn from './pages/SignIn';
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
           <Route path="/upload-files" element={<UploadFiles />} />
           <Route path="/archived-dogs" element={<ArchivedDogs />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/vet-bills" element={<VetBills />} />
         </Routes>
       </DashboardLayout>
     </Router>
