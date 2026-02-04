@@ -9,6 +9,7 @@ import DashboardLayout from './components/layouts/dashboard-layout';
 import DogDirectory from './pages/dog-directory';
 import DogDetails from './pages/dog-details';
 import UploadFiles from './pages/upload-files';
+import ArchivedDogs from './pages/ArchivedDogs';
 import SignIn from './pages/SignIn';
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           <Route path="/dog-directory" element={<DogDirectory />} />
           <Route path="/dog-details" element={<DogDetails />} />
           <Route path="/upload-files" element={<UploadFiles />} />
+          <Route path="/archived-dogs" element={<ArchivedDogs />} />
         </Routes>
       </DashboardLayout>
     </Router>

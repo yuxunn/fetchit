@@ -284,13 +284,13 @@ export default function FileTable({
                     </Text>
                   </Table.Cell>
                   <Table.Cell>
-                    <Badge colorPalette="gray" variant="solid">
+                    <Badge colorPalette="orange" variant="solid">
                       {getCategoryLabel(file.category)}
                     </Badge>
                   </Table.Cell>
                   <Table.Cell>
                     <Badge
-                      colorPalette={file.visibility === 'public' ? 'green' : 'gray'}
+                      colorPalette={file.visibility === 'public' ? 'yellow' : file.visibility === 'administrators-only' ? 'red' : 'orange'}
                       variant="solid"
                     >
                       {getVisibilityLabel(file.visibility)}
