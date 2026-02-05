@@ -22,8 +22,8 @@ const CATEGORY_OPTIONS = createListCollection({
 const VISIBILITY_OPTIONS = createListCollection({
   items: [
     { label: "Public", value: "public" },
-    { label: "Private", value: "private" },
-    { label: "Admins Only", value: "admins-only" },
+    { label: "Administrators Only", value: "administrators-only" },
+    { label: "Administrators + Volunteers", value: "administrators-volunteers" },
   ],
 });
 

@@ -1,8 +1,13 @@
-import { Box, VStack, Heading, Separator } from "@chakra-ui/react";
+import { Box, VStack, Heading, Separator, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toaster } from "@/components/ui/toaster";
 import { supabase } from "@/supabaseClient";
+import {
+  DialogRoot,
+  DialogContent,
+  DialogBody,
+} from "@/components/ui/dialog";
 import FileUploader from "./FileUploader";
 import UploadProgress from "./UploadProgress";
 import FileMetadataForm from "./FileMetadataForm";
@@ -22,6 +27,13 @@ export default function UploadFiles() {
   const [category, setCategory] = useState([]);
   const [visibility, setVisibility] = useState([]);
   const [remarks, setRemarks] = useState("");
+
+  // Status popup state
+  const [showStatusPopup, setShowStatusPopup] = useState(false);
+  const [statusType, setStatusType] = useState(""); // "success" or "error"
+
+  // Edit state
+  const [editingFile, setEditingFile] = useState(null);
 
   // Fetch documents from database
   const { data: uploadedFiles = [], isLoading } = useQuery({
@@ -82,10 +94,10 @@ export default function UploadFiles() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["documents"] });
-      toaster.create({
-        title: "File uploaded successfully",
-        type: "success",
-      });
+      
+      // Show success popup
+      setStatusType("success");
+      setShowStatusPopup(true);
 
       // Reset form
       setSelectedFile(null);
@@ -96,11 +108,9 @@ export default function UploadFiles() {
       setIsUploading(false);
     },
     onError: (error) => {
-      toaster.create({
-        title: "Upload failed",
-        description: error.message,
-        type: "error",
-      });
+      // Show error popup
+      setStatusType("error");
+      setShowStatusPopup(true);
       setIsUploading(false);
     },
   });
@@ -262,6 +272,49 @@ export default function UploadFiles() {
     deleteMutation.mutate(file);
   };
 
+  // Update mutation for editing
+  const updateMutation = useMutation({
+    mutationFn: async ({ fileId, metadata }) => {
+      const { error } = await supabase
+        .from("documents")
+        .update({
+          category: metadata.category,
+          visibility: metadata.visibility,
+          remarks: metadata.remarks,
+        })
+        .eq("id", fileId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      toaster.create({
+        title: "File updated successfully",
+        type: "success",
+      });
+      setEditingFile(null);
+    },
+    onError: (error) => {
+      toaster.create({
+        title: "Update failed",
+        description: error.message,
+        type: "error",
+      });
+    },
+  });
+
+  const handleEdit = (file) => {
+    setEditingFile(file);
+  };
+
+  const handleSaveEdit = (fileId, metadata) => {
+    updateMutation.mutate({ fileId, metadata });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingFile(null);
+  };
+
   return (
     <Box p={8} bg="bg" minH="100vh">
       <VStack gap={6} maxW="1200px" mx="auto" align="stretch">
@@ -310,7 +363,45 @@ export default function UploadFiles() {
           onView={handleView}
           onDownload={handleDownload}
           onDelete={handleDelete}
+          onEdit={handleEdit}
+          editingFile={editingFile}
+          onSaveEdit={handleSaveEdit}
+          onCancelEdit={handleCancelEdit}
         />
+
+        {/* Status Popup */}
+        <DialogRoot
+          open={showStatusPopup}
+          onOpenChange={(e) => setShowStatusPopup(e.open)}
+        >
+          <DialogContent maxW="md">
+            <DialogBody pt={6} pb={6}>
+              <VStack gap={4} align="stretch">
+                <VStack gap={2} align="stretch">
+                  <Heading size="md" color={statusType === "success" ? "green.500" : "red.500"}>
+                    {statusType === "success" 
+                      ? "Success with file upload completed" 
+                      : "Error with uploaded file"}
+                  </Heading>
+                  <Text color="fg.muted" fontSize="sm">
+                    {statusType === "success"
+                      ? "Your file has been successfully uploaded"
+                      : "Please check if the file you uploaded is a supported format and try again"}
+                  </Text>
+                </VStack>
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    colorPalette="gray"
+                    size="sm"
+                    onClick={() => setShowStatusPopup(false)}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              </VStack>
+            </DialogBody>
+          </DialogContent>
+        </DialogRoot>
       </VStack>
     </Box>
   );
