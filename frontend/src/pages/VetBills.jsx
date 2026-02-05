@@ -282,7 +282,9 @@ export default function VetBills() {
       }
     });
     
-    return Object.entries(categories).sort(([, a], [, b]) => b - a);
+    return Object.entries(categories)
+      .filter(([, amount]) => amount > 0)
+      .sort(([, a], [, b]) => b - a);
   }, [sortedBills, selectedQuarter]);
 
   // Pagination logic

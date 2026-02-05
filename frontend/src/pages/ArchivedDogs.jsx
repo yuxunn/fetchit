@@ -194,7 +194,7 @@ export default function ArchivedDogs() {
 
     const updates = {
       name: editName.trim(),
-      status: isUnarchiving ? "Available" : editStatus[0],
+      status: isUnarchiving ? unarchiveStatus[0] : editStatus[0],
     };
 
     // If unarchiving, clear adopted_at
@@ -478,13 +478,34 @@ export default function ArchivedDogs() {
               <Field.Root>
                 <Field.Label>Status</Field.Label>
                 {isUnarchiving ? (
-                  <Input
-                    value="Available"
-                    readOnly
+                  <Select.Root
+                    collection={UNARCHIVE_OPTIONS}
                     size="md"
-                    bg="bg.muted"
-                    color="fg.muted"
-                  />
+                    value={unarchiveStatus}
+                    onValueChange={(e) => setUnarchiveStatus(e.value)}
+                  >
+                    <Select.HiddenSelect />
+                    <Select.Control>
+                      <Select.Trigger bg="bg.panel">
+                        <Select.ValueText placeholder="Select status" />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Select.Positioner>
+                      <Select.Content bg="bg.panel">
+                        <Select.ItemGroup>
+                          {UNARCHIVE_OPTIONS.items.map((option) => (
+                            <Select.Item key={option.value} item={option}>
+                              <Select.ItemText>{option.label}</Select.ItemText>
+                              <Select.ItemIndicator />
+                            </Select.Item>
+                          ))}
+                        </Select.ItemGroup>
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
                 ) : (
                   <Select.Root
                     collection={EDIT_STATUS_OPTIONS}
