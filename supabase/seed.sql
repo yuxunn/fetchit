@@ -33,18 +33,18 @@ INSERT INTO medical_history (dog_id, name, date_archived, shelter, status, descr
 (10, 'Annual Vaccinations', '2026-01-14 11:15:00+00', 'FetchIt Main Shelter', 'Pending', 'Annual vaccinations due');
 
 -- Seed data for vet_bills table
-INSERT INTO vet_bills (dog_id, amount, bill_date, description) VALUES
-(1, 150.00, '2026-01-15', 'Annual checkup and vaccinations'),
-(1, 85.50, '2026-01-20', 'Dental cleaning'),
-(2, 120.00, '2026-01-10', 'Health examination'),
-(3, 200.00, '2025-12-20', 'Surgery for minor injury'),
-(4, 95.00, '2026-01-05', 'Grooming and health check'),
-(5, 175.00, '2026-01-18', 'Vaccination and blood work'),
-(6, 110.00, '2026-01-12', 'Ear infection treatment'),
-(7, 140.00, '2026-01-08', 'Complete physical exam'),
-(8, 80.00, '2026-01-22', 'Nail trim and checkup'),
-(9, 190.00, '2025-12-28', 'Emergency visit'),
-(10, 125.00, '2026-01-14', 'Annual vaccinations');
+INSERT INTO vet_bills (dog_id, amount, bill_date, description, treatment_name, status, payment_status, category) VALUES
+(1, 150.00, '2026-01-15', 'Annual checkup and vaccinations', 'Annual Checkup', 'Stable', 'Paid', 'Checkup'),
+(1, 85.50, '2026-01-20', 'Dental cleaning', 'Dental Cleaning', 'Stable', 'Paid', 'Dental'),
+(2, 120.00, '2026-01-10', 'Health examination', 'Health Exam', 'Stable', 'Paid', 'Checkup'),
+(3, 200.00, '2025-12-20', 'Surgery for minor injury', 'Minor Surgery', 'Critical', 'Paid', 'Surgery'),
+(4, 95.00, '2026-01-05', 'Grooming and health check', 'Grooming & Checkup', 'Stable', 'Unpaid', 'General'),
+(5, 175.00, '2026-01-18', 'Vaccination and blood work', 'Vaccination Package', 'Stable', 'Paid', 'Vaccination'),
+(6, 110.00, '2026-01-12', 'Ear infection treatment', 'Infection Treatment', 'Critical', 'Unpaid', 'Medication'),
+(7, 140.00, '2026-01-08', 'Complete physical exam', 'Physical Exam', 'Stable', 'Paid', 'Checkup'),
+(8, 80.00, '2026-01-22', 'Nail trim and checkup', 'Nail Trim', 'Stable', 'Unpaid', 'General'),
+(9, 190.00, '2025-12-28', 'Emergency visit', 'Emergency Care', 'Critical', 'Paid', 'Emergency'),
+(10, 125.00, '2026-01-14', 'Annual vaccinations', 'Vaccinations', 'Stable', 'Unpaid', 'Vaccination');
 
 -- Seed data for merchandise table
 INSERT INTO merchandise (name, category, price, stock_quantity) VALUES

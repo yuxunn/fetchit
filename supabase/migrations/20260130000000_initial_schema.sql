@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS dogs (
     size TEXT CHECK (size IN ('Small', 'Medium', 'Large')),
     weight NUMERIC(5, 2),
     gender TEXT NOT NULL CHECK (gender IN ('Male', 'Female')),
-    status TEXT NOT NULL DEFAULT 'Available' CHECK (status IN ('Available', 'Foster Care', 'Adopted', 'Urgent')),
+    status TEXT NOT NULL DEFAULT 'Available' CHECK (status IN ('Available', 'Foster Care', 'Adopted', 'Urgent', 'Deceased')),
     is_hdb_approved BOOLEAN DEFAULT false,
     kennel TEXT,
     description TEXT,
