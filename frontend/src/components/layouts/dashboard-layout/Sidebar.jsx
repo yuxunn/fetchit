@@ -10,8 +10,6 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FiHome,
   FiGrid,
-  FiList,
-  FiCalendar,
   FiUsers,
   FiHeart,
   FiFileText,
@@ -20,8 +18,8 @@ import {
 } from "react-icons/fi";
 
 const navItems = [
+  { label: "Dashboard", path: "/", icon: FiHome },
   { label: "Dog Directory", path: "/dogs", icon: FiGrid },
-  { label: "Events", path: "/events", icon: FiCalendar },
   { label: "Users", path: "/users", icon: FiUsers },
   { label: "Sponsorships", path: "/sponsorships", icon: FiHeart },
   { label: "Vet Bills", path: "/vet-bills", icon: FiFileText },
@@ -56,6 +54,9 @@ export default function Sidebar() {
               display="flex"
               alignItems="center"
               gap={2}
+              px={3}
+              py={2}
+              borderRadius="md"
               bg={isActive ? "bg.emphasized" : "transparent"}
               _hover={isActive ? undefined : { bg: "bg.muted" }}
               aria-current={isActive ? "page" : undefined}

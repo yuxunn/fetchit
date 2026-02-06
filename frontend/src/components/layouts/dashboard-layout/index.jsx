@@ -6,11 +6,13 @@ export { Sidebar, Navbar };
 
 export default function DashboardLayout({ children }) {
   return (
-    <Flex minH="100vh">
+    <Flex height="100vh" overflow="hidden">
       <Sidebar />
-      <Box flex={1} p={4}>
-        <Navbar mb={6} />
-        {children}
+      <Box flex={1} display="flex" flexDirection="column">
+        <Navbar />
+        <Box flex={1} overflowY="auto">
+          {children}
+        </Box>
       </Box>
     </Flex>
   );

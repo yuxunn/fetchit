@@ -61,7 +61,7 @@ function Breadcrumb({ separator = "/ ", ...rest }) {
 
 export function Navbar(props) {
   return (
-    <HStack justify="space-between" align="center" {...props}>
+    <HStack justify="space-between" align="center" bg="bg.subtle" px={4} py={2} borderBottomWidth="1px" borderColor="border" {...props}>
       <Breadcrumb />
       <ColorModeButton />
     </HStack>

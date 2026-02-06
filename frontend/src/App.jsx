@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import DashboardLayout from './components/layouts/dashboard-layout';
 
 import DogDirectory from './pages/dog-directory';
@@ -60,8 +60,7 @@ function App() {
     <Router>
       <DashboardLayout>
         <Routes>
-          <Route path="/" element={<Navigate to="/dogs" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/dogs" element={<DogDirectory />} />
           <Route path="/dogs/new" element={<NewDog />} />
           <Route path="/dogs/:id/edit" element={<NewDog />} />
