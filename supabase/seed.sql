@@ -99,3 +99,31 @@ VALUES (
   '', 
   ''
 );
+
+-- Seed data for sponsorships table
+INSERT INTO sponsorships (sponsor_name, sponsor_contact, type, amount, start_date, end_date, status) VALUES
+('John Smith', 'john.smith@email.com', 'general', 500.00, '2026-01-01', '2026-12-31', 'active'),
+('Sarah Johnson', 'sarah.j@email.com', 'medical', 750.00, '2026-01-15', '2026-12-31', 'active'),
+('Mike Chen', 'mike.chen@company.com', 'food', 300.00, '2026-02-01', '2026-07-31', 'active'),
+('Animal Lovers Foundation', 'contact@animal-lovers.org', 'shelter', 1000.00, '2025-12-01', '2026-11-30', 'active'),
+('Pet Care Inc', 'info@petcare.com', 'medical', 600.00, '2025-11-01', '2026-10-31', 'active'),
+('Green Valley Vet Clinic', 'clinic@greenvalley.com', 'general', 400.00, '2026-01-20', '2026-06-30', 'active'),
+('Old Town Bakery', 'bakery@oldtown.com', 'food', 250.00, '2026-02-10', '2026-08-31', 'active'),
+('Corporate Sponsors Ltd', 'sponsors@corporate.com', 'shelter', 1500.00, '2025-10-01', '2026-09-30', 'active'),
+('Dr. Emily Davis', 'emily.davis@vet.com', 'medical', 800.00, '2026-01-05', '2026-12-31', 'active'),
+('Local Business Group', 'group@localbiz.com', 'general', 350.00, '2026-02-15', '2026-05-31', 'active');
+
+-- Seed data for sponsored_dogs table
+INSERT INTO sponsored_dogs (sponsorship_id, dog_id) VALUES
+(1, 1), -- John Smith sponsors Max
+(1, 2), -- John Smith also sponsors Bella
+(2, 4), -- Sarah Johnson sponsors Luna
+(3, 6), -- Mike Chen sponsors Daisy
+(4, 3), -- Animal Lovers Foundation sponsors Charlie
+(4, 9), -- Animal Lovers Foundation also sponsors Buddy
+(5, 5), -- Pet Care Inc sponsors Rocky
+(6, 7), -- Green Valley Vet Clinic sponsors Cooper
+(7, 8), -- Old Town Bakery sponsors Sadie
+(8, 10), -- Corporate Sponsors Ltd sponsors Molly
+(9, 1), -- Dr. Emily Davis sponsors Max
+(10, 2); -- Local Business Group sponsors Bella
