@@ -136,7 +136,7 @@ export default function Users() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"], refetchType: 'all' });
       toaster.create({
         title: "User added successfully",
         description: "An activation email will be sent to the user",
@@ -165,7 +165,7 @@ export default function Users() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"], refetchType: 'all' });
       toaster.create({
         title: "User updated successfully",
         type: "success",
@@ -193,7 +193,7 @@ export default function Users() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"], refetchType: 'all' });
       toaster.create({
         title: "User deleted successfully",
         type: "success",

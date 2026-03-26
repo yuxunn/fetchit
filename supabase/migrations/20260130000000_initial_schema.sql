@@ -104,11 +104,17 @@ ALTER TABLE vet_bills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE merchandise ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for public read access (adjust as needed for your security requirements)
-CREATE POLICY "Allow users to read their own data" ON users
-    FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Allow users to read all users" ON users
+    FOR SELECT USING (true);
 
 CREATE POLICY "Allow users to update their own data" ON users
     FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Allow authenticated users to insert users" ON users
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to delete users" ON users
+    FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read access on dogs" ON dogs
     FOR SELECT USING (true);

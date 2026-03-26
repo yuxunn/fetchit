@@ -24,8 +24,10 @@ import {
   DialogRoot,
   DialogContent,
   DialogBody,
+  DialogHeader,
+  DialogCloseTrigger,
 } from "@/components/ui/dialog";
-import { HiPencil, HiPlus } from "react-icons/hi2";
+import { HiPencil, HiPlus, HiTrash } from "react-icons/hi2";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const STATUS_OPTIONS = createListCollection({
@@ -96,6 +98,10 @@ export default function VetBills() {
   const [editPaymentStatus, setEditPaymentStatus] = useState([]);
   const [editCategory, setEditCategory] = useState([]);
   const [editDescription, setEditDescription] = useState("");
+
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingBill, setDeletingBill] = useState(null);
 
   // Status popup state
   const [showStatusPopup, setShowStatusPopup] = useState(false);
@@ -195,6 +201,31 @@ export default function VetBills() {
     onError: (error) => {
       setStatusType("error");
       setStatusMessage(error.message || "Failed to update vet bill. Please try again.");
+      setShowStatusPopup(true);
+    },
+  });
+
+  // Delete vet bill mutation
+  const deleteBillMutation = useMutation({
+    mutationFn: async (billId) => {
+      const { error } = await supabase
+        .from("vet_bills")
+        .delete()
+        .eq("id", billId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vetBills"] });
+      setShowDeleteModal(false);
+      setDeletingBill(null);
+      setStatusType("success");
+      setStatusMessage("Vet bill deleted successfully!");
+      setShowStatusPopup(true);
+    },
+    onError: (error) => {
+      setStatusType("error");
+      setStatusMessage(error.message || "Failed to delete vet bill. Please try again.");
       setShowStatusPopup(true);
     },
   });
@@ -327,6 +358,17 @@ export default function VetBills() {
     setNewPaymentStatus(["Unpaid"]);
     setNewCategory(["General"]);
     setNewDescription("");
+  };
+
+  const handleDelete = (bill) => {
+    setDeletingBill(bill);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (deletingBill) {
+      deleteBillMutation.mutate(deletingBill.id);
+    }
   };
 
   const handleAddBill = () => {
@@ -806,6 +848,15 @@ export default function VetBills() {
                           colorPalette="blue"
                         >
                           <HiPencil />
+                        </IconButton>
+                        <IconButton
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDelete(bill)}
+                          aria-label="Delete bill"
+                          colorPalette="red"
+                        >
+                          <HiTrash />
                         </IconButton>
                       </HStack>
                     </Table.Cell>
@@ -1376,6 +1427,45 @@ export default function VetBills() {
                 OK
               </Button>
             </VStack>
+          </DialogBody>
+        </DialogContent>
+      </DialogRoot>
+
+      {/* Delete Confirmation Modal */}
+      <DialogRoot
+        open={showDeleteModal}
+        onOpenChange={(e) => setShowDeleteModal(e.open)}
+      >
+        <DialogContent>
+          <DialogHeader>Confirm Deletion</DialogHeader>
+          <DialogCloseTrigger />
+          <DialogBody>
+            {deletingBill && (
+              <VStack align="stretch" gap={4}>
+                <Text>
+                  Are you sure you want to delete the vet bill for{" "}
+                  <strong>{deletingBill.dogs?.name || "this dog"}</strong>?
+                  This action cannot be undone.
+                </Text>
+                <HStack justify="flex-end" gap={2}>
+                  <Button
+                    size="md"
+                    variant="outline"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size="md"
+                    colorPalette="red"
+                    onClick={confirmDelete}
+                    loading={deleteBillMutation.isPending}
+                  >
+                    Delete
+                  </Button>
+                </HStack>
+              </VStack>
+            )}
           </DialogBody>
         </DialogContent>
       </DialogRoot>
