@@ -11,6 +11,23 @@ import CardGrid from "./CardGrid";
 export default function DogDirectory() {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Fetch unique breed values from database
+  const { data: breedOptions = [] } = useQuery({
+    queryKey: ["breeds"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("dogs")
+        .select("breed")
+        .not("breed", "is", null);
+
+      if (error) throw error;
+
+      // Get unique breed values and sort them
+      const uniqueBreeds = [...new Set(data.map(d => d.breed))].sort();
+      return uniqueBreeds;
+    },
+  });
+
   // Helper function to get initial values from URL params
   const getInitialValue = (param, defaultValue, isArray = false) => {
     const value = searchParams.get(param);
@@ -23,7 +40,7 @@ export default function DogDirectory() {
 
   // State for filters (pending - not yet applied)
   const [kennel, setKennel] = useState(() => getInitialValue("kennel", [], true));
-  const [breed, setBreed] = useState(() => getInitialValue("breed", ""));
+  const [breed, setBreed] = useState(() => getInitialValue("breed", [], true));
   const [status, setStatus] = useState(() => getInitialValue("status", [], true));
   const [hdbApproved, setHdbApproved] = useState(() => getInitialValue("hdbApproved", false));
   const [ageRange, setAgeRange] = useState(() => {
@@ -52,11 +69,11 @@ export default function DogDirectory() {
   }
 
   // Search handler - applies both search text and filters by updating URL params
-  function handleSearch() {
+    function handleSearch() {
     const newParams = {};
 
     if (kennel.length > 0) newParams.kennel = kennel.join(",");
-    if (breed) newParams.breed = breed;
+  if (breed && breed.length > 0) newParams.breed = breed.join(",");
     if (status.length > 0) newParams.status = status.join(",");
     if (hdbApproved) newParams.hdbApproved = "true";
     if (ageRange[0] > 0) newParams.ageMin = ageRange[0].toString();
@@ -93,7 +110,15 @@ export default function DogDirectory() {
 
       const breedParam = searchParams.get("breed");
       if (breedParam) {
-        query = query.ilike("breed", `%${breedParam}%`);
+        // support multiple breeds (CSV) by OR-ing ilike clauses so values can be
+        // partial matches (e.g. 'labrador' matches 'Labrador Retriever')
+        const breeds = breedParam.split(",").map(b => b.trim()).filter(Boolean);
+        if (breeds.length === 1) {
+          query = query.ilike("breed", `%${breeds[0]}%`);
+        } else if (breeds.length > 1) {
+          const orExpr = breeds.map(b => `breed.ilike.%${b}%`).join(",");
+          query = query.or(orExpr);
+        }
       }
 
       const statusParam = searchParams.get("status");
@@ -190,6 +215,7 @@ export default function DogDirectory() {
         setMedicalPriority={setMedicalPriority}
         handleResetFilters={handleResetFilters}
         onSearch={handleSearch}
+        breeds={breedOptions}
       />
       <VStack flex={1} gap={4} align="stretch">
         <Header
