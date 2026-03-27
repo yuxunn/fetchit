@@ -15,8 +15,8 @@ import { Link } from "react-router-dom";
 
 const SORT_OPTIONS = createListCollection({
   items: [
-    { label: "Newest", value: "newest" },
-    { label: "Oldest", value: "oldest" },
+    { label: "Newest Addition", value: "newest" },
+    { label: "Oldest Addition", value: "oldest" },
     { label: "Name (A-Z)", value: "name_asc" },
     { label: "Name (Z-A)", value: "name_desc" },
     { label: "Age (Youngest)", value: "age_young" },

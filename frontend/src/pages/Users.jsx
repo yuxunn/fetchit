@@ -114,11 +114,30 @@ export default function Users() {
   // Create user mutation
   const createUserMutation = useMutation({
     mutationFn: async ({ name, email, role }) => {
-      // Insert user into users table
+      // Generate a temporary password (user will be prompted to change it)
+      const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      
+      // Create auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: email,
+        password: tempPassword,
+        options: {
+          data: {
+            full_name: name,
+            role: role,
+          },
+          emailRedirectTo: window.location.origin + '/reset-password',
+        },
+      });
+
+      if (authError) throw authError;
+
+      // Insert user into users table with the auth user ID
       const { data, error } = await supabase
         .from("users")
         .insert([
           {
+            id: authData.user.id,
             full_name: name,
             email: email,
             role: role,
@@ -129,18 +148,23 @@ export default function Users() {
 
       if (error) throw error;
 
-      // TODO: Send activation email via Supabase Auth
-      // This would typically be done through Supabase Auth's invite user function
-      // For now, we just create the database record
+      // Send password reset email immediately
+      await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/reset-password',
+      });
 
-      return data;
+      return { user: data, tempPassword };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["users"], refetchType: 'all' });
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       toaster.create({
         title: "User added successfully",
-        description: "An activation email will be sent to the user",
+        description: isLocal 
+          ? "A password reset email has been sent. Check Mailpit at http://127.0.0.1:54324"
+          : "A password reset email has been sent to the user",
         type: "success",
+        duration: 8000,
       });
       setShowAddModal(false);
       resetAddForm();
@@ -165,7 +189,7 @@ export default function Users() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"], refetchType: 'all' });
       toaster.create({
         title: "User updated successfully",
         type: "success",
@@ -193,7 +217,7 @@ export default function Users() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"], refetchType: 'all' });
       toaster.create({
         title: "User deleted successfully",
         type: "success",

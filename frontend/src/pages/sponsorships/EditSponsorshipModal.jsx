@@ -42,26 +42,47 @@ export default function EditSponsorshipModal({ isOpen, onClose, sponsorship }) {
   });
 
   const queryClient = useQueryClient();
+  const isCreating = !sponsorship;
 
-  const updateSponsorshipMutation = useMutation({
+  const saveSponsorshipMutation = useMutation({
     mutationFn: async (data) => {
-      const { data: result, error } = await supabase
-        .from("sponsorships")
-        .update({
-          sponsor_name: data.sponsor_name,
-          sponsor_contact: data.sponsor_contact,
-          type: data.type,
-          amount: parseFloat(data.amount),
-          start_date: data.start_date,
-          end_date: data.end_date || null,
-          status: data.status,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", sponsorship.id)
-        .select();
+      if (isCreating) {
+        // Create new sponsorship
+        const { data: result, error } = await supabase
+          .from("sponsorships")
+          .insert({
+            sponsor_name: data.sponsor_name,
+            sponsor_contact: data.sponsor_contact,
+            type: data.type,
+            amount: parseFloat(data.amount),
+            start_date: data.start_date,
+            end_date: data.end_date || null,
+            status: data.status,
+          })
+          .select();
 
-      if (error) throw error;
-      return result;
+        if (error) throw error;
+        return result;
+      } else {
+        // Update existing sponsorship
+        const { data: result, error } = await supabase
+          .from("sponsorships")
+          .update({
+            sponsor_name: data.sponsor_name,
+            sponsor_contact: data.sponsor_contact,
+            type: data.type,
+            amount: parseFloat(data.amount),
+            start_date: data.start_date,
+            end_date: data.end_date || null,
+            status: data.status,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", sponsorship.id)
+          .select();
+
+        if (error) throw error;
+        return result;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sponsorships"] });
@@ -80,7 +101,7 @@ export default function EditSponsorshipModal({ isOpen, onClose, sponsorship }) {
       end_date: getFormValue("end_date"),
       status: getFormValue("status"),
     };
-    updateSponsorshipMutation.mutate(submitData);
+    saveSponsorshipMutation.mutate(submitData);
   };
 
   const handleInputChange = (field, value) => {
@@ -101,7 +122,7 @@ export default function EditSponsorshipModal({ isOpen, onClose, sponsorship }) {
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Edit Sponsorship</Dialog.Title>
+              <Dialog.Title>{isCreating ? "Create Sponsor" : "Edit Sponsorship"}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
           <form onSubmit={handleSubmit}>
@@ -221,10 +242,10 @@ export default function EditSponsorshipModal({ isOpen, onClose, sponsorship }) {
                 <Button
                   type="submit"
                   onClick={handleSubmit}
-                  loading={updateSponsorshipMutation.isPending}
+                  loading={saveSponsorshipMutation.isPending}
                   colorPalette="blue"
                 >
-                  Save Changes
+                  {isCreating ? "Create Sponsor" : "Save Changes"}
                 </Button>
               </HStack>
             </Dialog.Footer>

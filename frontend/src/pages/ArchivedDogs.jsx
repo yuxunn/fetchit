@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
 import { toaster } from "@/components/ui/toaster";
 import {
@@ -61,6 +62,7 @@ const ITEMS_PER_PAGE = 10;
 
 export default function ArchivedDogs() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState(["all"]);
   const [sortBy, setSortBy] = useState(["date_archived_desc"]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,8 +142,8 @@ export default function ArchivedDogs() {
   };
 
   const handleView = (dog) => {
-    // Navigate to dog details page
-    window.location.href = `/dog-details?id=${dog.id}`;
+    // Navigate to dog details page using React Router
+    navigate(`/dogs/${dog.id}`);
   };
 
   const handleEdit = (dog) => {

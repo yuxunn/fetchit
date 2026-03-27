@@ -28,16 +28,16 @@ const KENNEL_OPTIONS = [
 
 const STATUS_OPTIONS = ["Available", "Foster Care", "Adopted", "Urgent"];
 
-const BREED_OPTIONS = createListCollection({
+const STATIC_BREED_OPTIONS = createListCollection({
   items: [
-    { label: "Labrador Retriever", value: "labrador" },
-    { label: "Golden Retriever", value: "golden" },
-    { label: "Poodle", value: "poodle" },
-    { label: "Shiba Inu", value: "shiba" },
-    { label: "Mixed Breed", value: "mixed" },
-    { label: "German Shepherd", value: "german_shepherd" },
-    { label: "Corgi", value: "corgi" },
-    { label: "Beagle", value: "beagle" },
+    { label: "Labrador Retriever", value: "Labrador Retriever" },
+    { label: "Golden Retriever", value: "Golden Retriever" },
+    { label: "Poodle", value: "Poodle" },
+    { label: "Shiba Inu", value: "Shiba Inu" },
+    { label: "Mixed Breed", value: "Mixed Breed" },
+    { label: "German Shepherd", value: "German Shepherd" },
+    { label: "Corgi", value: "Corgi" },
+    { label: "Beagle", value: "Beagle" },
   ],
 });
 
@@ -63,7 +63,13 @@ export default function Filters({
   setMedicalPriority,
   handleResetFilters,
   onSearch,
+  breeds, // optional array of breed strings from DB
 }) {
+  // Build a createListCollection for the Select component. Prefer dynamic
+  // `breeds` passed from parent; fall back to a static list.
+  const breedCollection = breeds && breeds.length
+    ? createListCollection({ items: breeds.map(b => ({ label: b, value: b })) })
+    : STATIC_BREED_OPTIONS
   return (
     <VStack align="stretch" spacing={6} minW="xs">
       <Heading as="h2" size="md" mb={2}>
@@ -134,11 +140,13 @@ export default function Filters({
         <Collapsible.Content>
           <Box px={2} py={2}>
             <Select.Root
-              collection={BREED_OPTIONS}
+              collection={breedCollection}
               size="sm"
               width="full"
-              value={breed ? [breed] : []}
-              onValueChange={(e) => setBreed(e.value?.[0] || "")}
+              // support multi-select: `breed` is an array of values
+              value={breed || []}
+              onValueChange={(e) => setBreed(e.value || [])}
+              multiple
             >
               <Select.HiddenSelect />
               <Select.Control>
@@ -152,9 +160,9 @@ export default function Filters({
               <Portal>
                 <Select.Positioner>
                   <Select.Content>
-                    {BREED_OPTIONS.items.map((breed) => (
-                      <Select.Item item={breed} key={breed.value}>
-                        {breed.label}
+                    {breedCollection.items.map((breedItem) => (
+                      <Select.Item item={breedItem} key={breedItem.value}>
+                        {breedItem.label}
                         <Select.ItemIndicator />
                       </Select.Item>
                     ))}

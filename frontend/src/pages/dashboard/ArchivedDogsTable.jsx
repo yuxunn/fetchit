@@ -4,13 +4,13 @@ import supabase from '../../supabaseClient'
 
 const ArchivedDogsTable = () => {
   const { data: archivedDogs = [] } = useQuery({
-    queryKey: ['archived-dogs'],
+    queryKey: ['archivedDogs'],
     queryFn: async () => {
       const { data } = await supabase
         .from('dogs')
         .select('*')
-        .eq('status', 'Deceased')
-        .order('created_at', { ascending: false })
+        .in('status', ['Deceased', 'Adopted'])
+        .order('adopted_at', { ascending: false })
       return data || []
     }
   })
@@ -38,7 +38,8 @@ const ArchivedDogsTable = () => {
                     <Table.Cell fontWeight="semibold">{dog.name}</Table.Cell>
                     <Table.Cell>{dog.breed}</Table.Cell>
                     <Table.Cell color="fg.muted" fontSize="sm">
-                      {new Date(dog.created_at).toLocaleDateString()}
+                      {/* Use adopted_at (archived date) when available, fall back to created_at */}
+                      {new Date(dog.adopted_at || dog.created_at).toLocaleDateString()}
                     </Table.Cell>
                     <Table.Cell>
                       <Badge
