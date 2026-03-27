@@ -3,6 +3,7 @@ import {
   VStack,
   HStack,
   Heading,
+  Button,
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -120,9 +121,20 @@ export default function Sponsorships() {
     <Box p={8} bg="bg" minH="100vh">
       <VStack gap={6} maxW="1400px" mx="auto" align="stretch">
         {/* Header */}
-        <Heading size="2xl" color="fg.default">
-          Sponsorships Management
-        </Heading>
+        <HStack justify="space-between" align="center">
+          <Heading size="2xl" color="fg.default">
+            Sponsorships Management
+          </Heading>
+          <Button
+            colorScheme="blue"
+            onClick={() => {
+              setEditingSponsorship(null);
+              setIsEditModalOpen(true);
+            }}
+          >
+            Create Sponsor
+          </Button>
+        </HStack>
 
         {/* Main Content with Sidebar */}
         <HStack align="start" gap={6} flex={1}>
