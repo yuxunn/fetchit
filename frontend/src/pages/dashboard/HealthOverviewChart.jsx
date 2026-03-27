@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Card, VStack, Heading, Box } from '@chakra-ui/react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import supabase from '../../supabaseClient'
 
 const HealthOverviewChart = () => {
@@ -38,7 +38,16 @@ const HealthOverviewChart = () => {
                 <XAxis dataKey="condition" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="count" fill="#10B981" />
+                <Bar dataKey="count">
+                  {healthOverview.map((entry, index) => {
+                    const cond = (entry.condition || '').toLowerCase()
+                    let fill = '#10B981' // green for normal
+                    if (cond.includes('urgent')) fill = '#EF4444' // red
+                    else if (cond.includes('high')) fill = '#F97316' // orange
+                    else if (cond.includes('critical')) fill = '#DC2626'
+                    return <Cell key={`cell-${index}`} fill={fill} />
+                  })}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </Box>
