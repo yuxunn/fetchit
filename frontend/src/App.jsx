@@ -14,11 +14,13 @@ import Users from './pages/Users';
 import VetBills from './pages/VetBills';
 import Sponsorships from './pages/sponsorships';
 import SignIn from './pages/SignIn';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   useEffect(() => {
     // Check for existing session on mount
@@ -31,7 +33,11 @@ function App() {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // Check if this is a password recovery event
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+      }
       setIsAuthenticated(!!session);
       setUser(session?.user ?? null);
     });
@@ -48,10 +54,24 @@ function App() {
     return null; // Or a loading spinner
   }
 
+  // If user is in password recovery mode, show reset password page
+  if (isPasswordRecovery) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="*" element={<ResetPassword />} />
+        </Routes>
+      </Router>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <Router>
-        <SignIn onSignIn={handleSignIn} />
+        <Routes>
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<SignIn onSignIn={handleSignIn} />} />
+        </Routes>
       </Router>
     );
   }
