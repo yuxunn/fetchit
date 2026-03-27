@@ -177,10 +177,10 @@ export default function DogDirectory() {
 
       if (error) throw error;
 
-      // If no status param provided, filter out archived statuses on the client
-      // so the directory defaults to showing active dogs only.
+      // Always filter out archived statuses on the client unless user explicitly selected them
+      // This ensures archived dogs don't appear in search results or default view
       if (!statusParam) {
-        const archivedStatuses = ["Deceased", "Adopted", "Archived"]
+        const archivedStatuses = ["Deceased", "Adopted"]
         return (data || []).filter(d => !archivedStatuses.includes(d.status))
       }
 
