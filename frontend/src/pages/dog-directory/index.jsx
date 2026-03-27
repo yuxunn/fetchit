@@ -151,6 +151,14 @@ export default function DogDirectory() {
       const { data, error } = await query;
 
       if (error) throw error;
+
+      // If no status param provided, filter out archived statuses on the client
+      // so the directory defaults to showing active dogs only.
+      if (!statusParam) {
+        const archivedStatuses = ["Deceased", "Adopted", "Archived"]
+        return (data || []).filter(d => !archivedStatuses.includes(d.status))
+      }
+
       return data;
     },
   });

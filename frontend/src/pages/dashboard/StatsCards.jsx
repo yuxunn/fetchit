@@ -24,7 +24,9 @@ const StatsCards = () => {
         .from('sponsored_dogs')
         .select('dog_id')
 
-      const totalActiveDogs = dogData?.filter(d => d.status !== 'Deceased').length || 0
+  // Exclude archived statuses from active count
+  const archivedStatuses = ['Deceased', 'Adopted', 'Archived']
+  const totalActiveDogs = dogData?.filter(d => !archivedStatuses.includes(d.status)).length || 0
       const shelterCapacity = 50
       const shelterOccupancy = Math.round((totalActiveDogs / shelterCapacity) * 100)
       const highPriorityDogs = dogData?.filter(d =>
