@@ -1,3 +1,9 @@
+-- Drop old permissive policies
+DROP POLICY IF EXISTS "Allow users to read all users" ON users;
+DROP POLICY IF EXISTS "Allow users to update their own data" ON users;
+DROP POLICY IF EXISTS "Allow authenticated users to insert users" ON users;
+DROP POLICY IF EXISTS "Allow authenticated users to delete users" ON users;
+
 -- Create helper function to check if current user is an admin
 CREATE OR REPLACE FUNCTION is_admin()
 RETURNS boolean AS $$

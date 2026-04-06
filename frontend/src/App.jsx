@@ -78,20 +78,19 @@ function App() {
 
   return (
     <Router>
-      <DashboardLayout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dogs" element={<DogDirectory />} />
-          <Route path="/dogs/new" element={<NewDog />} />
-          <Route path="/dogs/:id/edit" element={<NewDog />} />
-          <Route path="/dogs/:id" element={<DogDetails />} />
-          <Route path="/upload-files" element={<UploadFiles />} />
-          <Route path="/archived-dogs" element={<ArchivedDogs />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/vet-bills" element={<VetBills />} />
-          <Route path="/sponsorships" element={<Sponsorships />} />
-        </Routes>
-      </DashboardLayout>
+      <Routes>
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+        <Route path="/dogs" element={<DashboardLayout><DogDirectory /></DashboardLayout>} />
+        <Route path="/dogs/new" element={<DashboardLayout><NewDog /></DashboardLayout>} />
+        <Route path="/dogs/:id/edit" element={<DashboardLayout><NewDog /></DashboardLayout>} />
+        <Route path="/dogs/:id" element={<DashboardLayout><DogDetails /></DashboardLayout>} />
+        <Route path="/upload-files" element={<DashboardLayout><UploadFiles /></DashboardLayout>} />
+        <Route path="/archived-dogs" element={<DashboardLayout><ArchivedDogs /></DashboardLayout>} />
+        <Route path="/users" element={<DashboardLayout><Users /></DashboardLayout>} />
+        <Route path="/vet-bills" element={<DashboardLayout><VetBills /></DashboardLayout>} />
+        <Route path="/sponsorships" element={<DashboardLayout><Sponsorships /></DashboardLayout>} />
+      </Routes>
     </Router>
   );
 }

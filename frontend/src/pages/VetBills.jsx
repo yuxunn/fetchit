@@ -649,6 +649,21 @@ export default function VetBills() {
                               return null;
                             }
                             
+                            // Special case: if only one category, draw a full circle
+                            if (categoryBreakdown.length === 1) {
+                              const colors = ["#E68B2F", "#D84343", "#EBC44F", "#38A169", "#3182CE", "#805AD5", "#DD6B20"];
+                              return (
+                                <circle
+                                  cx="100"
+                                  cy="100"
+                                  r="90"
+                                  fill={colors[0]}
+                                  stroke="white"
+                                  strokeWidth="2"
+                                />
+                              );
+                            }
+                            
                             const colors = ["#E68B2F", "#D84343", "#EBC44F", "#38A169", "#3182CE", "#805AD5", "#DD6B20"];
                             let currentAngle = -90; // Start from top
                             
