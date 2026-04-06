@@ -309,25 +309,13 @@ export default function VetBills() {
         if (!categories[category]) {
           categories[category] = 0;
         }
-        const amount = parseFloat(bill.amount || 0);
-        if (!isNaN(amount)) {
-          categories[category] += amount;
-        }
+        categories[category] += parseFloat(bill.amount || 0);
       }
     });
     
-    const result = Object.entries(categories)
+    return Object.entries(categories)
       .filter(([, amount]) => amount > 0)
       .sort(([, a], [, b]) => b - a);
-    
-    // Debug logging for deployed version
-    if (result.length === 0) {
-      console.log('[VetBills] No category data for quarter:', selectedQuarter);
-      console.log('[VetBills] Total bills:', sortedBills.length);
-      console.log('[VetBills] Sample bill:', sortedBills[0]);
-    }
-    
-    return result;
   }, [sortedBills, selectedQuarter]);
 
   // Pagination logic
@@ -642,13 +630,6 @@ export default function VetBills() {
                         <svg width="200" height="200" viewBox="0 0 200 200">
                           {(() => {
                             const total = categoryBreakdown.reduce((sum, [, amt]) => sum + amt, 0);
-                            
-                            // Safety check
-                            if (total <= 0 || !isFinite(total)) {
-                              console.error('[VetBills] Invalid total:', total, categoryBreakdown);
-                              return null;
-                            }
-                            
                             const colors = ["#E68B2F", "#D84343", "#EBC44F", "#38A169", "#3182CE", "#805AD5", "#DD6B20"];
                             let currentAngle = -90; // Start from top
                             
@@ -667,12 +648,6 @@ export default function VetBills() {
                               const y1 = 100 + 90 * Math.sin(startRad);
                               const x2 = 100 + 90 * Math.cos(endRad);
                               const y2 = 100 + 90 * Math.sin(endRad);
-                              
-                              // Safety check for NaN
-                              if (!isFinite(x1) || !isFinite(y1) || !isFinite(x2) || !isFinite(y2)) {
-                                console.error('[VetBills] Invalid coordinates:', { x1, y1, x2, y2, category, amount, angle });
-                                return null;
-                              }
                               
                               const largeArc = angle > 180 ? 1 : 0;
                               

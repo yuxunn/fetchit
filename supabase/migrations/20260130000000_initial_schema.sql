@@ -173,7 +173,7 @@ CREATE POLICY "Allow users to read their own documents" ON documents
     FOR SELECT USING (uploaded_by = auth.uid());
 
 CREATE POLICY "Allow admins to read admin-only documents" ON documents
-    FOR SELECT USING (visibility = 'administrators-only' AND uploaded_by = auth.uid());
+    FOR SELECT USING (visibility = 'admins-only' AND uploaded_by = auth.uid());
 
 CREATE POLICY "Allow authenticated users to insert documents" ON documents
     FOR INSERT WITH CHECK (uploaded_by = auth.uid());
