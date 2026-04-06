@@ -1,13 +1,25 @@
 -- Function to automatically create auth user when user is inserted
 CREATE OR REPLACE FUNCTION create_auth_user_on_insert()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER 
+SECURITY DEFINER
+LANGUAGE plpgsql
+AS $$
 DECLARE
   random_password TEXT;
+  new_user_id UUID;
 BEGIN
+  -- Generate UUID for the new user if not provided
+  IF NEW.id IS NULL THEN
+    new_user_id := gen_random_uuid();
+    NEW.id := new_user_id;
+  ELSE
+    new_user_id := NEW.id;
+  END IF;
+
   -- Generate a random password (user will reset it)
-  random_password := encode(gen_random_bytes(32), 'hex');
+  random_password := md5(random()::text || clock_timestamp()::text);
   
-  -- Create auth user if it doesn't exist
+  -- Create auth user
   INSERT INTO auth.users (
     id,
     instance_id,
@@ -21,11 +33,11 @@ BEGIN
     created_at,
     updated_at
   ) VALUES (
-    NEW.id,
+    new_user_id,
     '00000000-0000-0000-0000-000000000000',
     NEW.email,
-    crypt(random_password, gen_salt('bf')),
-    NOW(), -- Auto-confirm email
+    extensions.crypt(random_password, extensions.gen_salt('bf'::text)),
+    NOW(),
     jsonb_build_object('provider', 'email', 'providers', jsonb_build_array('email')),
     jsonb_build_object('full_name', NEW.full_name),
     'authenticated',
@@ -37,11 +49,11 @@ BEGIN
   
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
--- Create trigger on users table
+-- Create trigger on users table (BEFORE INSERT so we can set the ID)
 DROP TRIGGER IF EXISTS on_user_created ON users;
 CREATE TRIGGER on_user_created
-  AFTER INSERT ON users
+  BEFORE INSERT ON users
   FOR EACH ROW
   EXECUTE FUNCTION create_auth_user_on_insert();

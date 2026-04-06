@@ -18,6 +18,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE POLICY "Allow admins to read all users" ON users
     FOR SELECT USING (is_admin());
 
+-- Allow admins to insert users (they'll use triggers to create auth users)
 CREATE POLICY "Allow admins to insert users" ON users
     FOR INSERT WITH CHECK (is_admin());
 
